@@ -4,8 +4,8 @@ class Vehicle {
         this.vel = createVector(0, 0);
         this.acc = createVector(0, 0);
         this.r = 6;
-        this.maxSpeed = 6;
-        this.maxForce = 0.3;
+        this.maxSpeed = 4;
+        this.maxForce = 0.1;
     }
 
     run(target) {
@@ -27,7 +27,14 @@ class Vehicle {
 
     seek(target) {
         let desired = p5.Vector.sub(target, this.loc);
-        desired.setMag(this.maxSpeed);
+        let speed = this.maxSpeed;
+        const dist = p5.Vector.dist(this.loc, target);
+
+        if (dist <= 100) {
+            speed = map(dist, 0, 100, 0, this.maxSpeed);
+        }
+
+        desired.setMag(speed);
 
         let steering = p5.Vector.sub(desired, this.vel);
         steering.limit(this.maxForce);
