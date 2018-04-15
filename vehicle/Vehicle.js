@@ -42,6 +42,33 @@ class Vehicle {
         this.applyForce(steering);
     }
 
+    getNear(targets) {
+        let dist = 100000;
+        let i = -1;
+
+        targets.forEach((target, index) => {
+            const distance = p5.Vector.dist(this.loc, target.loc);
+            if (distance <= dist) {
+                dist = distance;
+                i = index;
+            }
+        });
+
+        return i;
+    }
+
+    grow(target) {
+        if (
+            target.x <= this.loc.x + this.r &&
+            target.x >= this.loc.x - this.r &&
+            target.y <= this.loc.y + this.r &&
+            target.y >= this.loc.y - this.r
+        ) {
+            return true;
+        }
+        return false;
+    }
+
     display() {
         const r = this.r;
 
@@ -49,6 +76,7 @@ class Vehicle {
         push();
         translate(this.loc.x, this.loc.y);
         rotate(theta);
+        fill(200);
         triangle(0, -r * 2, -r, r * 2, r, r * 2);
         pop();
     }
