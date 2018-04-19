@@ -1,12 +1,11 @@
 let vehicle;
-let targets = [];
+let path;
 
 function setup() {
     createCanvas(1000, 500);
 
     vehicle = new Vehicle();
-
-    this.createNewTargets();
+    path = new Path();
 }
 
 function draw() {
@@ -20,33 +19,11 @@ function draw() {
     line(0, height - 1, width, height - 1);
     line(width - 1, 0, width - 1, height);
 
+    path.display();
+
     // Draw target
     stroke(0);
 
-    const index = vehicle.getNear(targets);
-
-    targets.forEach((target, targetIndex) => {
-        if (targetIndex === index) {
-            fill(200, 0, 0, 90);
-        } else {
-            fill(200);
-        }
-        target.display();
-    });
     // Draw vehicle
-    vehicle.run(targets[index].loc);
-
-    if (vehicle.grow(targets[index].loc)) {
-        if (targets.length == 1) {
-            this.createNewTargets();
-        }
-
-        targets.splice(index, 1);
-    }
-}
-
-function createNewTargets() {
-    for (let i = 0; i < 2; i++) {
-        targets.push(new Target());
-    }
+    vehicle.run();
 }

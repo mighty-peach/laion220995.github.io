@@ -2,19 +2,21 @@ class Vehicle {
     constructor() {
         this.loc = createVector(width / 2, height / 2);
         this.vel = createVector(0, 0);
-        this.acc = createVector(0, 0);
+        this.acc = createVector(0, -1);
         this.r = 6;
         this.maxSpeed = 4;
         this.maxForce = 0.1;
     }
 
-    run(target) {
-        this.seek(target);
+    run() {
+        // this.seek();
         this.update();
         this.display();
     }
 
     update() {
+        this.checkPredict();
+
         this.vel.add(this.acc);
         this.loc.add(this.vel);
 
@@ -42,31 +44,15 @@ class Vehicle {
         this.applyForce(steering);
     }
 
-    getNear(targets) {
-        let dist = 100000;
-        let i = -1;
+    checkPredict() {
+        let predict = this.vel.copy();
+        let currentLoc = this.loc.copy();
+        predict.normalize();
+        predict.mult(50);
 
-        targets.forEach((target, index) => {
-            const distance = p5.Vector.dist(this.loc, target.loc);
-            if (distance <= dist) {
-                dist = distance;
-                i = index;
-            }
-        });
-
-        return i;
-    }
-
-    grow(target) {
-        if (
-            target.x <= this.loc.x + this.r &&
-            target.x >= this.loc.x - this.r &&
-            target.y <= this.loc.y + this.r &&
-            target.y >= this.loc.y - this.r
-        ) {
-            return true;
-        }
-        return false;
+        let predictPos = currentLoc.add(predict);
+        line(this.loc.x, this.loc.y, predictPos.x, predictPos.y);
+        ellipse(predictPos.x, predictPos.y, 5, 5);
     }
 
     display() {
