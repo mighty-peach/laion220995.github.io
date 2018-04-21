@@ -1,22 +1,19 @@
 class Vehicle {
-    constructor() {
-        this.loc = createVector(width / 2, height / 2);
+    constructor(x, y) {
+        this.loc = createVector(x, y);
         this.vel = createVector(0, 0);
-        this.acc = createVector(0, -1);
-        this.r = 6;
+        this.acc = createVector(random(-1, 1), random(-1, 1));
+        this.r = 5;
         this.maxSpeed = 4;
         this.maxForce = 0.1;
     }
 
     run() {
-        // this.seek();
         this.update();
         this.display();
     }
 
     update() {
-        this.checkPredict();
-
         this.vel.add(this.acc);
         this.loc.add(this.vel);
 
@@ -44,15 +41,72 @@ class Vehicle {
         this.applyForce(steering);
     }
 
-    checkPredict() {
+    follow(path) {
         let predict = this.vel.copy();
         let currentLoc = this.loc.copy();
         predict.normalize();
         predict.mult(50);
 
         let predictPos = currentLoc.add(predict);
-        line(this.loc.x, this.loc.y, predictPos.x, predictPos.y);
-        ellipse(predictPos.x, predictPos.y, 5, 5);
+
+        let target = createVector(0, 0);
+        let normal = createVector(0, 0);
+        let record = 100000000;
+
+        for (let i = 0; i < path.points.length - 1; i++) {
+            const start = path.points[i].copy();
+            const end = path.points[i + 1].copy();
+
+            let normalVector = this.getNormalPoint(
+                predictPos.copy(),
+                start.copy(),
+                end.copy(),
+            );
+
+            if (normalVector.x < start.x || normalVector.x > end.x) {
+                // This is something of a hacky solution, but if it's not within the line segment
+                // consider the normal to just be the end of the line segment (point b)
+                normalVector = end;
+            }
+
+            let distance = p5.Vector.dist(predictPos, normalVector);
+
+            if (distance < record) {
+                record = distance;
+                normal = normalVector;
+
+                let dir = p5.Vector.sub(end, start);
+                dir.normalize();
+                dir.mult(10);
+
+                target = normalVector.copy().add(dir);
+            }
+        }
+
+        if (record > path.radius) {
+            this.seek(target);
+        }
+
+        this.borders(path);
+    }
+
+    getNormalPoint(p, a, b) {
+        let ap = p.sub(a);
+        let ab = b.sub(a);
+        ab.normalize();
+
+        const c = ap.dot(ab);
+        ab.mult(c);
+
+        a.add(ab);
+        return a;
+    }
+
+    borders(p) {
+        if (this.loc.x > width + this.r) {
+            this.loc.x = p.getStart().x - this.r;
+            this.loc.y = p.getStart().y + (this.loc.y - p.getEnd().y);
+        }
     }
 
     display() {

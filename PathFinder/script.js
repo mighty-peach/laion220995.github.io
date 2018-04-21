@@ -1,11 +1,14 @@
-let vehicle;
+let vehicles = [];
 let path;
 
 function setup() {
     createCanvas(1000, 500);
 
-    vehicle = new Vehicle();
-    path = new Path();
+    for (let i = 0; i < 1; i++) {
+        vehicles.push(new Vehicle(width / 2, height / 2));
+    }
+
+    this.newPath();
 }
 
 function draw() {
@@ -20,10 +23,24 @@ function draw() {
     line(width - 1, 0, width - 1, height);
 
     path.display();
-
-    // Draw target
+    strokeWeight(1);
     stroke(0);
 
     // Draw vehicle
-    vehicle.run();
+    vehicles.forEach((vehicle) => {
+        vehicle.run();
+        vehicle.follow(path);
+    });
+}
+
+function mousePressed() {
+    vehicles.push(new Vehicle(mouseX, mouseY));
+}
+
+function newPath() {
+    path = new Path();
+    path.addPoint(-20, height / 2);
+    path.addPoint(random(0, width / 2), random(0, height));
+    path.addPoint(random(width / 2, width), random(0, height));
+    path.addPoint(width + 20, height / 2);
 }
