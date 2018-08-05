@@ -2,9 +2,9 @@ class Vehicle {
     constructor(x, y) {
         this.loc = createVector(x, y);
         this.vel = createVector(0, 0);
-        this.acc = createVector(random(-1, 1), random(-1, 1));
+        this.acc = createVector(random(-2, 2), random(-2, 2));
         this.r = 5;
-        this.maxSpeed = 4;
+        this.maxSpeed = random(3, 4);
         this.maxForce = 0.1;
     }
 
@@ -26,11 +26,22 @@ class Vehicle {
 
     seek(target) {
         let desired = p5.Vector.sub(target, this.loc);
+        this.maxForce = 0.1;
+
+        if (desired.x < 0) {
+            desired.x = -1 * desired.x;
+            this.maxForce = 0.3;
+        }
+
         let speed = this.maxSpeed;
         const dist = p5.Vector.dist(this.loc, target);
 
-        if (dist <= 100) {
+        if (dist <= 100 && dist >= 30) {
             speed = map(dist, 0, 100, 0, this.maxSpeed);
+        }
+
+        if (speed <= 1.5) {
+            speed = this.maxSpeed;
         }
 
         desired.setMag(speed);

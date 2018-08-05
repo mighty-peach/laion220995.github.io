@@ -2,6 +2,9 @@ let vehicle;
 let targets = [];
 
 function setup() {
+    targetLimit = createSlider(2, 10, 1, 1);
+    targetLimit.position(20, 20);
+    targetLimit.style('width', '80px');
     createCanvas(1000, 500);
 
     vehicle = new Vehicle();
@@ -33,6 +36,7 @@ function draw() {
         }
         target.display();
     });
+
     // Draw vehicle
     vehicle.run(targets[index].loc);
 
@@ -46,7 +50,11 @@ function draw() {
 }
 
 function createNewTargets() {
-    for (let i = 0; i < 2; i++) {
+    for (let i = 0; i < 1; i++) {
         targets.push(new Target());
     }
+}
+
+function mousePressed() {
+    targets.push(new Target(mouseX, mouseY));
 }

@@ -1,6 +1,6 @@
 class Target {
-    constructor() {
-        this.loc = createVector(random(0, width), random(0, height));
+    constructor(x, y) {
+        this.loc = createVector(x || random(0, width), y || random(0, height));
     }
 
     display() {

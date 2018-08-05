@@ -2,6 +2,16 @@ let startAngle = 0;
 let angleVel = .23;
 
 function setup() {
+    cof1 = createSlider(1, 1.4, 1, .01);
+    cof1.position(20, 40);
+    cof1.style('width', '80px');
+    cof2 = createSlider(1, 1.2, 1, .01);
+    cof2.position(20, 60);
+    cof2.style('width', '80px');
+    size = createSlider(.1, .5, .5, .01);
+    size.position(20, 80);
+    size.style('width', '80px');
+
     createCanvas(1600, 400);
 }
 
@@ -17,7 +27,7 @@ function draw() {
     noStroke();
     fill(255, 80);
 
-    for(let x = 0 ; x <= width; x += .5) {
+    for(let x = 0 ; x <= width; x += size.value()) {
         let y = sin(angle);
         let y1 = cos(angle1);
         let y2 = cos(angle2);
@@ -26,8 +36,8 @@ function draw() {
         y2 = map(y2, -1, 1, -height / 12, height / 12);
         ellipse(x, y / y1 * y2, 2);
         angle += angleVel;
-        angle1 += angleVel / 1.4;
-        angle2 += angleVel * 1.2;
+        angle1 += angleVel / cof1.value();
+        angle2 += angleVel * cof2.value();
     }
 
 }
