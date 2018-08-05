@@ -2,9 +2,6 @@ let vehicle;
 let targets = [];
 
 function setup() {
-    targetLimit = createSlider(2, 10, 1, 1);
-    targetLimit.position(20, 80);
-    targetLimit.style('width', '80px');
     createCanvas(1000, 500);
 
     vehicle = new Vehicle();
