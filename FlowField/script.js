@@ -20,7 +20,7 @@ function draw() {
     line(0, height - 1, width, height - 1);
     line(width - 1, 0, width - 1, height);
 
-    if (debug) flowField.display();
+    if (!debug) flowField.display();
     flowField.update();
 
     // Draw vehicle
