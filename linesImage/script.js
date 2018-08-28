@@ -1,33 +1,39 @@
 let pointLines = [];
+let image;
+let ticker = 1;
 const tickLimit = 20;
-let ticker = 0;
+
+function preload(){
+    sourceImage = loadImage('./img.jpg');
+}
 
 function setup() {
     createCanvas(200, 200);
+    pixelDensity(1);
+    sourceImage.loadPixels();
+    loadPixels();
 
     pointLines.push(new Line(200));
     pointLines[0].init();
+    fill(255);
+    stroke(255);
 }
 
 function draw() {
     background(0);
 
-    fill(255);
-    stroke(255);
-
 
     pointLines.forEach((pointLine, index) => {
-        pointLine.update();
+        pointLine.update(sourceImage);
 
         if (pointLine.isDead()) {
             pointLines.splice(index, 1);
         }
     });
 
-    if (ticker === tickLimit) {
+    if (ticker % tickLimit === 0) {
         pointLines[pointLines.length - 1].init();
-        ticker = 0;
-    } else {
-        ticker++;
     }
+
+    ticker++;
 }

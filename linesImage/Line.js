@@ -6,16 +6,24 @@ class Line {
     }
 
     init() {
-        for (let i = 0; i < this.size; i++) {
+        for (let i = 1; i < this.size; i++) {
             const point = new Point(i, this.size);
             point.init();
             this.points.push(point);
         }
     }
 
-    update() {
+    update(sourceImage) {
         this.points.forEach((point, index) => {
-            const isUpdated = point.update();
+            const pixel = point.getPixel();
+            const color = sourceImage.get(pixel[0], pixel[1]);
+
+            let normal = (color[0] + color[1] + color[2]) / 3;
+
+            const mappedNormal = map(normal, 0, 255, 1, .2);
+
+            const isUpdated = point.update(mappedNormal);
+
             if (!isUpdated) {
                 this.points.splice(index, 1);
             }
