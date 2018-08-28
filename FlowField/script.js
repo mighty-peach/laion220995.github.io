@@ -4,7 +4,7 @@ let debug = true;
 
 function setup() {
     createCanvas(1000, 300);
-
+    document.querySelector('canvas').focus();
     vehicles.push(new Vehicle(10, 20));
     flowField = new FlowField(10);
 }
