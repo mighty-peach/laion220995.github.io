@@ -23,6 +23,8 @@ function draw() {
     // Draw target
     stroke(0);
 
+
+    /** Только для подсветки ближайшей цели */
     const index = vehicle.getNear(targets);
 
     targets.forEach((target, targetIndex) => {
