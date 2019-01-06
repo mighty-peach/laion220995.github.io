@@ -3,8 +3,8 @@ let targetSystem;
 
 function setup() {
     createCanvas(1000, 500);
-    targetSystem = new TargetSystem(2);
-    vehicleSystem = new VehicleSystem(targetSystem, 3, width / 2, height / 2);
+    targetSystem = new TargetSystem(3);
+    vehicleSystem = new VehicleSystem(targetSystem, 2, width / 2, height / 2);
     vehicleSystem.create();
 }
 

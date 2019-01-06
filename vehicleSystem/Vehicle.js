@@ -3,9 +3,10 @@ class Vehicle {
         this.fill = fill;
         this.size = size;
 
-        this.location = location;
+        this.location = location.copy();
+        this.isGrowed = false;
         this.vel = createVector(0, 0);
-        this.acc = createVector(.1, .3);
+        this.acc = createVector(0, 0);
         this.maxSpeed = maxSpeed;
         this.maxForce = maxForce;
         this.minDist = minDist;
@@ -15,7 +16,8 @@ class Vehicle {
      * @param {Vector2} target - вектор координат цели
      */
     run(target) {
-        this.seek(target);
+        let targetCopy = target.copy();
+        this.seek(targetCopy);
         this.update();
         this.display();
     }
@@ -82,6 +84,10 @@ class Vehicle {
         }
 
         return false;
+    }
+
+    changeGrowStatus(isGrowed) {
+        this.isGrowed = isGrowed;
     }
 
     display() {

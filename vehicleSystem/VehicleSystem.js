@@ -2,25 +2,24 @@ class VehicleSystem {
     constructor (targetSystem, vechicleCount, startLocationX, startLocationY) {
         this.targetSystem = targetSystem;
         this.vechicleCount = vechicleCount;
-        this.startLocationX = startLocationX;
-        this.startLocationY = startLocationY;
+        this.startLocationX = startLocationX + random(width / 3, width / 2);
+        this.startLocationY = startLocationY + random(height / 3, height / 2);
+        this.startLocation = createVector(this.startLocationX, this.startLocationY);
         this.vechicles = {};
     }
 
     create() {
         for (let i = 0; i < this.vechicleCount; i++) {
-            const locationX = this.startLocationX + random(-1 * width / 3, width / 3);
-            const locationY = this.startLocationY + random(-1 * height / 3, height / 3);
-            const size = random(2, 4);
-            const maxSpeed = random(2, 3);
-            const maxForce = random(.03, .05);
-            const minDist = random(80, 100);
+            const size = 2;
+            const maxSpeed = 3;
+            const maxForce = .07;
+            const minDist = 60;
             this.vechicles[i] = new Vehicle(
                 200,
                 size,
                 maxSpeed,
                 maxForce,
-                createVector(locationX, locationY),
+                this.startLocation,
                 minDist,
             );
         }
@@ -28,18 +27,31 @@ class VehicleSystem {
 
     update() {
         for (let i = 0; i < Object.keys(this.vechicles).length; i++) {
-            const foundTarget = this.getDesiredDist(this.vechicles[i].location, this.targetSystem.targets);
-            const targetLocation = this.targetSystem.targets[foundTarget.index].location;
-            this.vechicles[i].run(targetLocation)
+            const vechicle = this.vechicles[i];
+            if (!vechicle.isGrowed) {
+                const foundTarget = this.getDesiredDist(vechicle.location, this.targetSystem.targets);
+                const targetLocation = this.targetSystem.targets[foundTarget.index].location;
+                vechicle.run(targetLocation)
 
-            if (this.vechicles[i].grow(targetLocation)) {
-                this.targetSystem.deleteTarget(foundTarget.index)
+                if (vechicle.grow(targetLocation)) {
+                    this.targetSystem.deleteTarget(foundTarget.index)
+
+                    vechicle.changeGrowStatus(true);
+                }
+            } else {
+                vechicle.run(this.startLocation);
+
+                if (vechicle.grow(this.startLocation)) {
+                    vechicle.changeGrowStatus(false);
+                }
             }
         }
+
+        this.createStartLocaion();
     }
 
     getDesiredDist(vechicleLocation, targets) {
-        return targets.reduce((minDist, target, index) => {
+        const targetDist = targets.reduce((minDist, target, index) => {
             const dist = p5.Vector.dist(vechicleLocation, target.location);
             if (minDist.dist < 0 || minDist.dist > dist) {
                 minDist = {
@@ -50,5 +62,12 @@ class VehicleSystem {
 
             return minDist;
         }, { dist: -1, index: -1 });
+
+        return targetDist;
+    }
+
+    createStartLocaion() {
+        fill([200, 100, 100]);
+        ellipse(this.startLocation.x, this.startLocation.y, 5, 5);
     }
 }
